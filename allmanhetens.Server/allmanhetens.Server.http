@@ -1,0 +1,6 @@
+@allmanhetens.Server_HostAddress = http://localhost:5128
+
+GET {{allmanhetens.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

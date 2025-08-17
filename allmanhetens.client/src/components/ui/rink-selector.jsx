@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Search } from 'lucide-react';
+import { Heading, Button, Stack, Card } from "@chakra-ui/react";
 export default function RinkManager() {
   const [allRinks, setAllRinks] = useState([]);
   const [selectedRinks, setSelectedRinks] = useState([]);
@@ -88,31 +89,32 @@ export default function RinkManager() {
         {filteredRinks.length === 0 ? (
           <p className="text-gray-500">No rinks match your search.</p>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <Stack>
             {filteredRinks.map((rink) => (
-              <li key={rink.id} className="p-3 flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.has(rink.id)}
-                  onChange={() => toggleRinkSelection(rink)}
-                  className="mr-3"
-                />
-                <div>
-                  <p className="font-medium text-gray-900">{rink.name}</p>
+              <Card.Root key={rink.id} size="sm">
+                <Card.Header>
+                  <Heading>
+                    {rink.name}
+                  </Heading>
+                </Card.Header>
+                <Card.Body>
                   <p className="text-sm text-gray-500">{rink.address}</p>
-                </div>
-              </li>
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(rink.id)}
+                    onChange={() => toggleRinkSelection(rink)}
+                    className="mr-3"
+                  />
+                </Card.Body>
+              </Card.Root>
             ))}
-          </ul>
+          </Stack>
         )}
 
         <div className="mt-4">
-          <button
-            onClick={() => setCurrentScreen("main")}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
+          <Button onClick={() => setCurrentScreen("main")}>
             Back
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -135,12 +137,7 @@ export default function RinkManager() {
         </ul>
       )}
 
-      <button
-        onClick={() => setCurrentScreen("select")}
-        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-      >
-        Add Rinks
-      </button>
+      <Button variant="surface" onClick={() => setCurrentScreen("select")}>Välj ishallar</Button>
     </div>
   );
 }

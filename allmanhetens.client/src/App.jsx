@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Clock, MapPin, Sun, Moon, GripVertical } from 'lucide-react';
-import RinkSelector from './RinkSelector';
+import { VStack, Heading } from "@chakra-ui/react"
+import RinkSelector from './components/ui/rink-selector';
+import RinkCardOld from './components/ui/rink-card-old';
+import { ColorModeButton } from './components/ui/color-mode';
+import SessionsDateSelector from './components/ui/sessions-date-selector.tsx';
 
 // API Service
 const sessionService = {
@@ -41,25 +44,14 @@ const transformSessionData = (apiSessions) => {
       return groups;
     }, {})
   );
-  console.log(groupedArray);
   return groupedArray;
 };
 
-const getSessionTypeStyles = (type) => {
-  switch (type) {
-    case 1: return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-    case 2: return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-    default: return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
-  }
-};
-
 function App() {
+  const [currentDate, setCurrentDate] = useState('2025-08-17');
   const [searchTerm, setSearchTerm] = useState('');
   const [sessions, setSessions] = useState([]);
   const [selectedRinks, setSelectedRinks] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [dragOverIndex, setDragOverIndex] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -98,75 +90,16 @@ function App() {
     }
   };
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
-  const handleDragStart = (e, index) => {
-    setDraggedItem(selectedRinks[index]);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e, index) => {
-    e.preventDefault();
-    setDragOverIndex(index);
-  };
-
-  const handleDragLeave = () => {
-    setDragOverIndex(null);
-  };
-
-  const handleDrop = (e, dropIndex) => {
-    e.preventDefault();
-
-    if (draggedItem === null) return;
-
-    const draggedIndex = selectedRinks.findIndex(rink => rink.id === draggedItem.id);
-    if (draggedIndex === dropIndex) {
-      setDraggedItem(null);
-      setDragOverIndex(null);
-      return;
-    }
-
-    const newSessions = [...selectedRinks];
-    newSessions.splice(draggedIndex, 1);
-    newSessions.splice(dropIndex, 0, draggedItem);
-
-    setSelectedRinks(newSessions);
-    setSessions(newSessions);
-    setDraggedItem(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedItem(null);
-    setDragOverIndex(null);
-  };
 
   return (
-    <div className={darkMode ? 'dark' : ''}>
+    <div>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <div className="max-w-2xl mx-auto px-4">
           {/* Header */}
-          <div className="py-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <h1 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                🏒 Ice Rinks Nearby
-              </h1>
-              <button
-                onClick={toggleDarkMode}
-                className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow"
-              >
-                {darkMode ? (
-                  <Sun className="w-5 h-5 text-yellow-500" />
-                ) : (
-                  <Moon className="w-5 h-5 text-gray-600" />
-                )}
-              </button>
-            </div>
-            <button>Välj arenor</button>
-          </div>
-
+          <Heading size="xl">
+                🏒 Allmänhetens <ColorModeButton></ColorModeButton>
+          </Heading>
+          <SessionsDateSelector currentDate={currentDate} setCurrentDate={setCurrentDate}></SessionsDateSelector>
           {/* Rink Cards */}
           {loading ? (
             <div className="space-y-3">
@@ -197,79 +130,11 @@ function App() {
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <VStack>
               {selectedRinks.map((rink, index) => (
-                <div
-                  key={rink.id}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  className={`bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 cursor-move transition-all duration-200 ${dragOverIndex === index ? 'ring-2 ring-blue-400 scale-105' : ''
-                    } ${draggedItem?.id === rink.id ? 'opacity-50' : ''} hover:shadow-lg`}
-                >
-                  <div className="flex items-start space-x-3">
-                    {/* Drag Handle */}
-                    <div className="flex-shrink-0 pt-1">
-                      <GripVertical className="w-5 h-5 text-gray-400" />
-                    </div>
-
-                    {/* Rink Content */}
-                    <div className="flex-1 space-y-4">
-                      {/* Rink Header */}
-                      <div className="flex justify-between items-start">
-                        <div className="space-y-1">
-                          <h3 className="text-lg font-semibold text-blue-700 dark:text-blue-300">
-                            {rink.name}
-                          </h3>
-                          <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                            <MapPin className="w-4 h-4" />
-                            <span>{rink.address}</span>
-                            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-xs font-medium">
-                              {rink.distance}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <hr className="border-gray-200 dark:border-gray-600" />
-
-                      {/* Sessions */}
-                      <div className="space-y-3">
-                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                          Today's Public Skating Sessions
-                        </p>
-                        {rink.sessions.map((session) =>
-                        (<div
-                            key={session.id}
-                            className="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-3"
-                          >
-                            <div className="flex items-center space-x-3">
-                              <Clock className="w-5 h-5 text-blue-500" />
-                              <div className="space-y-1">
-                                <p className="font-semibold text-gray-900 dark:text-white">
-                                  {session.time}
-                                </p>
-                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getSessionTypeStyles(session.typeId)}`}>
-                                  {session.type}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                                {session.id}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <RinkCardOld rink={rink} index={index} selectedRinks={selectedRinks} key={ index }></RinkCardOld>
               ))}
-            </div>
+            </VStack>
           )}
 
 

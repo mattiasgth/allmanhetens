@@ -61,6 +61,7 @@ export default function RinkCardOld({ rink, index, selectedRinks })
   return (
     <Card.Root
       key={rink.id}
+      width={'100%'}
       draggable
       onDragStart={(e) => handleDragStart(e, index)}
       onDragOver={(e) => handleDragOver(e, index)}
@@ -93,8 +94,8 @@ export default function RinkCardOld({ rink, index, selectedRinks })
               Today's Public Skating Sessions
             </div>
             {rink.sessions.map((session) =>
-            (<VStack key={session.id}>
-              <Box bg="bg" shadow="md" borderRadius="md" padding="8px" marginBottom="4px">
+            (<VStack key={session.id} width={'100%'}>
+              <Box bg="bg" shadow="md" borderRadius="md" padding="8px" marginBottom="4px" width={'100%'}>
                 <Flex>
                   <Clock className="w-5 h-5 text-blue-500" />&nbsp;{session.time}
                 </Flex>

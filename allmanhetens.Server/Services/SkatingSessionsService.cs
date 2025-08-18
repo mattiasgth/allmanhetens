@@ -1,4 +1,4 @@
-﻿using allmanhetens.Server.Data;
+using allmanhetens.Server.Data;
 using Allmanhetens.Model;
 
 namespace Allmanhetens.Server.Services
@@ -12,10 +12,16 @@ namespace Allmanhetens.Server.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<SkatingSession>> GetSkatingSessionsAsync()
+        public async Task<IEnumerable<SkatingSession>> GetSkatingSessionsAsync(DateTime? date)
         {
             await Task.CompletedTask;
-            return SkatingSessionData.Sessions;
+            var query = SkatingSessionData.Sessions.AsQueryable();
+            if(date != null)
+            {
+                query = query.Where(x => x.Date.Equals(date));
+            }
+            var rslt = query.ToList();
+            return rslt;
         }
 
         public async Task<IEnumerable<Rink>> GetRinksAsync()

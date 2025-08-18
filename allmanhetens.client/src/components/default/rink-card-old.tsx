@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Clock, MapPin, Sun, Moon, GripVertical } from 'lucide-react';
-import { Badge, Card, Separator, Flex, VStack, Box, Heading } from "@chakra-ui/react";
+import { Search, Clock, MapPin, Sun, ExternalLink, GripVertical } from 'lucide-react';
+import { Badge, Card, Separator, Flex, VStack, Box, Heading, Link } from "@chakra-ui/react";
 
 export default function RinkCardOld({ rink, index, selectedRinks })
 {
@@ -79,11 +79,9 @@ export default function RinkCardOld({ rink, index, selectedRinks })
           <GripVertical className="w-5 h-5 text-gray-400" />
         </Flex>
         <Flex>
-          <MapPin />
-          <span>{rink.address}</span>
-          <span>
-            {rink.distance}
-          </span>
+          <Link href={`https://www.bing.com/maps/?v=2&cp=${rink.latitude}%7E${rink.longitude}&lvl=18.0&sty=c`}>
+            <MapPin /> {rink.address} <ExternalLink />
+          </Link>
         </Flex>
       </Card.Header>
       <Card.Body>

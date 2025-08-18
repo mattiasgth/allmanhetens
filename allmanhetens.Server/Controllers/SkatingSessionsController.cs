@@ -22,11 +22,11 @@ namespace allmanhetens.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SkatingSessionResponseDTO>>> GetSkatingSessions()
+        public async Task<ActionResult<IEnumerable<SkatingSessionResponseDTO>>> GetSkatingSessions(DateTime? date = null)
         {
             try
             {
-                var sessions = await _service.GetSkatingSessionsAsync();
+                var sessions = await _service.GetSkatingSessionsAsync(date);
                 var rslt = _mapper.Map<IEnumerable<SkatingSessionResponseDTO>>(sessions);
                 return Ok(rslt);
             }

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { VStack, Heading, Center } from "@chakra-ui/react"
-import RinkSelector from './components/ui/rink-selector';
-import { ColorModeButton } from './components/ui/color-mode';
-import SessionsDateSelector from './components/ui/sessions-date-selector';
-import SelectedRinksList from './components/ui/selected-rinks-list';
+import { Center } from "@chakra-ui/react"
+import DefaultScreen from './components/default/default-screen';
+import SettingsScreen from './components/settings/settings-screen';
 import { AllmanhetensDate } from './model/allmanhetens-date'
+
+const formatTime = (time) => {
+  return time.split(':').splice(0, 2).join(':');
+}
 
 // Transform API data to display format
 const transformSessionData = (apiSessions) => {
@@ -14,7 +16,7 @@ const transformSessionData = (apiSessions) => {
     rinkName: session.rinkName,
     rinkAddress: session.rinkAddress,
     distance: `${session.distanceKm} km`,
-    time: `${session.startTime} - ${session.endTime}`,
+    time: `${formatTime(session.startTime)}–${formatTime(session.endTime) }`,
     type: session.sessionTypeName,
     typeId: session.sessionTypeId,
     // Additional data that could be useful
@@ -42,27 +44,39 @@ const transformSessionData = (apiSessions) => {
 };
 
 function App() {
-  const [currentDate, setCurrentDate] = useState((new AllmanhetensDate(null)).toString());
   const [searchTerm, setSearchTerm] = useState('');
   const [sessions, setSessions] = useState([]);
-  const [selectedRinks, setSelectedRinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeScreen, setActiveScreen] = useState('default');
+  const [selectedRinks, setSelectedRinks] = useState([]);
+  const [currentDate, setCurrentDate] = useState((new AllmanhetensDate(null)).toString());
+  function onCurrentDateUpdate(value) {
+    setCurrentDate(value);
+    loadSessions(value);
+  }
+
+  function onSettingsScreenClosed() {
+    setActiveScreen('default');
+  }
+
 
   // API Service
   const sessionService = {
-    async fetchSessions() {
+    async fetchSessions(date) {
       let params = new URLSearchParams();
-      params.append("date", currentDate);
+      if (date) {
+        params.append("date", date);
+      }
       return await fetch(`/api/skatingSessions?${params}`).then(res => res.json());
     }
   };
 
-  const loadSessions = async () => {
+  const loadSessions = async (date) => {
     try {
       setLoading(true);
       setError(null);
-      const apiSessions = await sessionService.fetchSessions();
+      const apiSessions = await sessionService.fetchSessions(date);
       const transformedSessions = transformSessionData(apiSessions);
       setSessions(transformedSessions);
       setSelectedRinks(transformedSessions);
@@ -76,7 +90,7 @@ function App() {
 
   // Load sessions from API on component mount
   React.useEffect(() => {
-    loadSessions();
+    loadSessions(currentDate);
   }, []);
 
   const handleSearch = (value) => {
@@ -93,48 +107,17 @@ function App() {
     }
   };
 
-  function onCurrentDateUpdate(value) {
-    setCurrentDate(value);
-    loadSessions();
-  }
 
 
   return (
     <Center>
-      <VStack maxWidth="480px">
-        {/* Header */}
-        <Heading size="xl">
-          🏒 Allmänhetens <ColorModeButton></ColorModeButton>
-        </Heading>
-        <SessionsDateSelector currentDate={currentDate} setCurrentDate={onCurrentDateUpdate} width={"100%"}></SessionsDateSelector>
-        <SelectedRinksList selectedRinks={selectedRinks} loading={loading} width={"100%"}></SelectedRinksList>
-        {/* Empty State */}
-        {selectedRinks.length === 0 && (
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-8 mt-4">
-            <div className="text-center space-y-4">
-              <div className="text-4xl">🔍</div>
-              <p className="text-gray-600 dark:text-gray-400">
-                No sessions found matching "{searchTerm}"
-              </p>
-              <button
-                onClick={() => handleSearch('')}
-                className="px-4 py-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900 rounded-lg transition-colors"
-              >
-                Clear search
-              </button>
-            </div>
-          </div>
-        )}
-        {/* Instructions */}
-        {selectedRinks.length > 0 && (
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-sm text-blue-700 dark:text-blue-300 text-center">
-              💡 Drag and drop cards to prioritize your preferred skating sessions
-            </p>
-          </div>
-        )}
-        <RinkSelector></RinkSelector>
-      </VStack >
+      {activeScreen === 'default' && (
+        <DefaultScreen setActiveScreen={setActiveScreen} loading={loading} loadSessions={loadSessions}
+          currentDate={currentDate} setCurrentDate={onCurrentDateUpdate} selectedRinks={ selectedRinks }></DefaultScreen>
+      )}
+      {activeScreen === 'settings' && (
+        <SettingsScreen closeScreen={ onSettingsScreenClosed }></SettingsScreen>
+      )}
     </Center>
   );
 }

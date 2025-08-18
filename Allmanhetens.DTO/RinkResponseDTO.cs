@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,5 +14,6 @@ namespace Allmanhetens.DTO
         public string? ImageUrl { get; set; }
         public string? IceType { get; set; }
         public string? Status { get; set; }
+        public string? InfoUrl { get; set; }
     }
 }

@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Search, ExternalLink } from 'lucide-react';
 import { Heading, Text, VStack, Card, InputGroup, Input, Checkbox, Image, Link } from "@chakra-ui/react";
 import { RinkResponse } from "../../model/rink-response";
-export default function RinkManager() {
+
+export interface RinkSelectorProps {
+  setError: any;
+};
+export default function RinkSelector({ setError }: RinkSelectorProps) {
   const [allRinks, setAllRinks] = useState<RinkResponse[]>([]);
   const [selectedRinks, setSelectedRinks] = useState<RinkResponse[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -24,10 +28,12 @@ export default function RinkManager() {
     async function fetchRinks() {
       try {
         const res = await fetch("/api/rinks");
+        if (!res.ok) throw res.status;
         const data = await res.json() as RinkResponse[];
         data.sort((a, b) => a.name.localeCompare(b.name)); // alphabetical sort
         setAllRinks(data);
       } catch (err) {
+        setError(`Failed to load list of rinks: ${err}.`);
         console.error("Error fetching rinks:", err);
       }
     }

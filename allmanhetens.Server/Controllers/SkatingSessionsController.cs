@@ -26,6 +26,7 @@ namespace allmanhetens.Server.Controllers
         {
             try
             {
+                await Task.Delay(100);
                 var sessions = await _service.GetSkatingSessionsAsync(date);
                 var rslt = _mapper.Map<IEnumerable<SkatingSessionResponseDTO>>(sessions);
                 return Ok(rslt);

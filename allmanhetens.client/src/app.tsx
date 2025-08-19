@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Center } from "@chakra-ui/react"
+import { Center, Text } from "@chakra-ui/react"
 import DefaultScreen from './components/default/default-screen';
 import SettingsScreen from './components/settings/settings-screen';
 import { AllmanhetensDate } from './model/allmanhetens-date'
@@ -77,6 +77,9 @@ function App() {
       }
       return fetch(`/api/rinks/${id}`)
         .then(res => {
+          if (!res.ok) {
+            throw `error: ${res.status}`;
+          };
           let p = res.json() as Promise<RinkResponse>;
           return p.then(rink => {
             cachedRinks.push(rink);
@@ -87,14 +90,18 @@ function App() {
     },
 
     async fetchSessions(date: string) {
+      setLoading(true);
       let params = new URLSearchParams();
       if (date) {
         params.append("date", date);
       }
       return await fetch(`/api/skatingSessions?${params}`)
         .then(
-          res => res.json() as Promise<SkatingSessionResponse[]>,
-          fail => setError(fail)
+          res => {
+            setLoading(false);
+            if (!res.ok) throw 'error';
+            return res.json() as Promise<SkatingSessionResponse[]>;
+          }
         );
     },
 
@@ -124,6 +131,9 @@ function App() {
             });
             setSessions(nextSessions);
             setSelectedRinks(nextSessions);
+          })
+          .catch(e => {
+            setError(`Failed to load rinks (${e}). Please try again later.`);
           });
       })
     }
@@ -137,8 +147,9 @@ function App() {
       const transformedSessions = transformSessionData(apiSessions);
       sessionService.addRinkDataToRinkSessions(transformedSessions);
     } catch (err) {
-      setError('Failed to load skating sessions. Please try again.');
-      console.error('Error loading sessions:', err);
+      setSessions([]);
+      setSelectedRinks([]);
+      setError('Failed to load skating sessions. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -152,11 +163,11 @@ function App() {
   return (
     <Center>
       {activeScreen === 'default' && (
-        <DefaultScreen setActiveScreen={setActiveScreen} loading={loading} loadSessions={loadSessions}
+        <DefaultScreen setActiveScreen={setActiveScreen} loading={loading} loadSessions={loadSessions} error={error}
           currentDate={currentDate} setCurrentDate={onCurrentDateUpdate} selectedRinks={selectedRinks}></DefaultScreen>
       )}
       {activeScreen === 'settings' && (
-        <SettingsScreen closeScreen={onSettingsScreenClosed}></SettingsScreen>
+        <SettingsScreen closeScreen={onSettingsScreenClosed} error={ error }  setError={ setError }></SettingsScreen>
       )}
     </Center>
   );

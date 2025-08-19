@@ -25,11 +25,11 @@ namespace allmanhetens.Server.Data
     new Rink
     {
         Id = 1,
-        Name = "Östermalms IP (indoor)",
+        Name = "Östermalms IP (Lejonhallen)",
         Address = "Fiskartorpsvägen 2, Östermalm, Stockholm",
         Longitude = 18.0730,
         Latitude = 59.3340,
-        ImageUrl = "/image_missing.png", // image from wheree.com 
+        ImageUrl = "https://images.svenskalag.se/72b6463b-47bc-4941-a6f6-a13bfaeb64b8/20130919_180137.jpg?0",
         IceType = "Artificial (Indoor)",
         Status = "Open (seasonal)"
     },
@@ -40,7 +40,7 @@ namespace allmanhetens.Server.Data
         Address = "Farstaängsvägen 3, Farsta, Stockholm",
         Longitude = 18.0630,
         Latitude = 59.2560,
-        ImageUrl = "https://www.farstahockey.se/images/1098/29381/11057705-6A92-4BA1-B6DD-0888C1BD340B_1057513_512.JPG?v=2021-03-22%2008:29:16", // image from farstahockey.se 
+        ImageUrl = "https://www.farstahockey.se/images/1098/29381/11057705-6A92-4BA1-B6DD-0888C1BD340B_1057513_512.JPG?v=2021-03-22%2008:29:16",
         IceType = "Artificial (Indoor)",
         Status = "Open (seasonal)"
     },
@@ -70,11 +70,11 @@ namespace allmanhetens.Server.Data
     new Rink
     {
         Id = 5,
-        Name = "Mälarhöjdens Ishall",
+        Name = "Mälarhöjdens Ishall 2",
         Address = "Lotta Svärds gränd 3, Hägersten, Stockholm",
         Longitude = 17.954953,
         Latitude = 59.28802,
-        ImageUrl = "/image_missing.png",
+        ImageUrl = "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fmb.cision.com%2FPublic%2F424%2F3730353%2Fb91c2a6e0d72bceb_800x800ar.jpg&f=1&nofb=1&ipt=c68c9060adf0edd286243ec835cb71f5b77ba3eb316e19fed7cc5be0dbe2737b",
         IceType = "Artificial (Indoor)",
         Status = "Open (new, since 2024)"
     },
@@ -120,7 +120,7 @@ namespace allmanhetens.Server.Data
         Address = "Liljeholmen, Stockholm",
         Longitude = 18.0050,
         Latitude = 59.3100,
-        ImageUrl = "/image_missing.png",
+        ImageUrl = "https://www.battrestadsdel.se/wp-content/uploads/2019/01/img_0384.jpg",
         IceType = "Natural",
         Status = "Weather dependent"
     }

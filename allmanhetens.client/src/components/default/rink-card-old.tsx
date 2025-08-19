@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Search, Clock, MapPin, Sun, ExternalLink, GripVertical } from 'lucide-react';
 import { Badge, Card, Separator, Flex, VStack, Box, Heading, Link } from "@chakra-ui/react";
+import { RinkSkatingSessions } from '../../model/rink-skating-sessions';
 
-export default function RinkCardOld({ rink, index, selectedRinks })
+export interface RinkCardOldProps {
+  rink: RinkSkatingSessions;
+  index: number;
+  selectedRinks: RinkSkatingSessions[];
+}
+export default function RinkCardOld({ rink, index, selectedRinks }: RinkCardOldProps)
 {
-  const [draggedItem, setDraggedItem] = useState(null);
-  const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [draggedItem, setDraggedItem] = useState<RinkSkatingSessions|null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number|null>(null);
 
-  const getSessionTypeStyles = (type) => {
+  const getSessionTypeStyles = (type: number) => {
     switch (type) {
       case 1: return 'green';
       case 2: return 'purple';
@@ -15,12 +21,12 @@ export default function RinkCardOld({ rink, index, selectedRinks })
     }
   };
 
-  const handleDragStart = (e, index) => {
+  const handleDragStart = (e: any, index: number) => {
     setDraggedItem(selectedRinks[index]);
     e.dataTransfer.effectAllowed = 'move';
   };
 
-  const handleDragOver = (e, index) => {
+  const handleDragOver = (e: any, index: number) => {
     e.preventDefault();
     setDragOverIndex(index);
   };
@@ -29,7 +35,7 @@ export default function RinkCardOld({ rink, index, selectedRinks })
     setDragOverIndex(null);
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = (e: any, dropIndex: number) => {
     e.preventDefault();
 
     if (draggedItem === null) return;
@@ -62,6 +68,7 @@ export default function RinkCardOld({ rink, index, selectedRinks })
     <Card.Root
       key={rink.id}
       width={'100%'}
+      bg="blue.subtle"
       draggable
       onDragStart={(e) => handleDragStart(e, index)}
       onDragOver={(e) => handleDragOver(e, index)}
@@ -76,7 +83,7 @@ export default function RinkCardOld({ rink, index, selectedRinks })
           <Heading size="lg">
             {rink.name}
           </Heading>
-          <GripVertical className="w-5 h-5 text-gray-400" />
+          <GripVertical />
         </Flex>
         <Flex>
           <Link href={`https://www.bing.com/maps/?v=2&cp=${rink.latitude}%7E${rink.longitude}&lvl=18.0&sty=c`}>
@@ -93,7 +100,7 @@ export default function RinkCardOld({ rink, index, selectedRinks })
             </div>
             {rink.sessions.map((session) =>
             (<VStack key={session.id} width={'100%'}>
-              <Box bg="bg" shadow="md" borderRadius="md" padding="8px" marginBottom="4px" width={'100%'}>
+              <Box bg="gray.100" shadow="md" borderRadius="md" padding="8px" marginBottom="4px" width={'100%'}>
                 <Flex>
                   <Clock className="w-5 h-5 text-blue-500" />&nbsp;{session.time}
                 </Flex>

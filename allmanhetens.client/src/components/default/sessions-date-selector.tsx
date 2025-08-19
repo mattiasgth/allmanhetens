@@ -3,7 +3,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { IconButton, Flex, Heading } from "@chakra-ui/react";
 import { AllmanhetensDate }  from '../../model/allmanhetens-date'
 
-export default function SessionsDateSelector({ currentDate, setCurrentDate }) {
+export interface SessionsDateSelectorProps {
+  currentDate: string;
+  setCurrentDate: any;
+}
+export default function SessionsDateSelector({ currentDate, setCurrentDate }: SessionsDateSelectorProps) {
 
   function onChangeDateClicked(delta: number) {
     if (delta === 1 || delta === -1)

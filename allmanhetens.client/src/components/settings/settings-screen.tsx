@@ -8,14 +8,14 @@ export interface SettingsScreenProps {
 };
 function SettingsScreen({ closeScreen }: SettingsScreenProps) {
   return (
-    <VStack minWidth="480px" maxWidth="480px">
+    <VStack maxWidth="95vw">
       {/* Header */}
       <Heading size="3xl">
         <IconButton onClick={closeScreen} variant="outline" ><ArrowBigLeft /></IconButton>Inställningar 
       </Heading>
-      <Card.Root width={"100%"}>
+      <Card.Root width={"100%"} bg="gray.subtle">
         <Card.Header>
-          <Heading>Dark Mode</Heading>
+          <Heading>Preferences</Heading>
         </Card.Header>
         <Card.Body>
           <div>

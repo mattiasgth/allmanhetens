@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Search, ExternalLink } from 'lucide-react';
 import { Heading, Text, VStack, Card, InputGroup, Input, Checkbox, Image, Link } from "@chakra-ui/react";
+import { RinkResponse } from "../../model/rink-response";
 export default function RinkManager() {
-  const [allRinks, setAllRinks] = useState([]);
-  const [selectedRinks, setSelectedRinks] = useState([]);
-  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [allRinks, setAllRinks] = useState<RinkResponse[]>([]);
+  const [selectedRinks, setSelectedRinks] = useState<RinkResponse[]>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [filterText, setFilterText] = useState("");
   const filterInputRef = useRef(null);
 
@@ -23,7 +24,7 @@ export default function RinkManager() {
     async function fetchRinks() {
       try {
         const res = await fetch("/api/rinks");
-        const data = await res.json();
+        const data = await res.json() as RinkResponse[];
         data.sort((a, b) => a.name.localeCompare(b.name)); // alphabetical sort
         setAllRinks(data);
       } catch (err) {
@@ -60,7 +61,7 @@ export default function RinkManager() {
 
 
   return (
-    <Card.Root width="100%">
+    <Card.Root width="100%" bg="gray.subtle">
       <Card.Header>
         <Heading>Select Rinks</Heading>
       </Card.Header>
@@ -70,11 +71,11 @@ export default function RinkManager() {
           <Input placeholder="Search rinks..." value={filterText} onChange={(e) => setFilterText(e.target.value)} ref={filterInputRef} />
         </InputGroup>
         {filteredRinks.length === 0 ? (
-          <div className="text-gray-500">No rinks match your search.</div>
+          <Text>No rinks match your search.</Text>
         ) : (
           <VStack>
             {filteredRinks.map((rink) => (
-              <Card.Root width="100%" key={rink.id} flexDirection="row" overflow="hidden">
+              <Card.Root width="100%" key={rink.id} flexDirection="row" overflow="hidden" bg="blue.subtle">
                 <Card.Body>
                   <Heading>
                     <Checkbox.Root checked={selectedIds.has(rink.id)}
@@ -103,49 +104,4 @@ export default function RinkManager() {
       </Card.Body>
     </Card.Root>
   );
-
-  return (
-    <Card.Root width="100%">
-      <Card.Header>
-        <Heading>Select Rinks</Heading>
-      </Card.Header>
-      <Card.Body>
-        <Card.Description>
-          {/* Filter input */}
-          <InputGroup startElement={<Search />} marginBottom="8px">
-            <Input placeholder="Search rinks..." value={filterText} onChange={(e) => setFilterText(e.target.value)} ref={filterInputRef} />
-          </InputGroup>
-
-          {filteredRinks.length === 0 ? (
-            <p className="text-gray-500">No rinks match your search.</p>
-          ) : (
-            <VStack>
-              {filteredRinks.map((rink) => (
-                <Card.Root key={rink.id} size="sm" width="100%">
-                  <Card.Header>
-                    <Heading>
-                      {rink.name}
-                    </Heading>
-                  </Card.Header>
-                  <Card.Body>
-                    <Card.Description>
-                      <Text>{rink.address}</Text>
-                      <input
-                        type="checkbox"
-                        checked={selectedIds.has(rink.id)}
-                        onChange={() => toggleRinkSelection(rink)}
-                        className="mr-3"
-                      />
-                    </Card.Description>
-                  </Card.Body>
-                </Card.Root>
-              ))}
-            </VStack>
-          )}
-        </Card.Description>
-      </Card.Body>
-    </Card.Root>
-  );
-
-
 }

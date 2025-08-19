@@ -2,8 +2,16 @@ import { VStack } from "@chakra-ui/react";
 import RinkCardOld from "./rink-card-old";
 
 import { useState } from "react";
+import { RinkSkatingSessions } from "../../model/rink-skating-sessions";
 
-function SelectedRinksList({ loading, error, setLoading, setError, selectedRinks }) {
+export interface SelectedRinksListProps {
+  loading: boolean;
+  error: string | null;
+  setLoading: any;
+  setError: any;
+  selectedRinks: RinkSkatingSessions[];
+}
+function SelectedRinksList({ loading, error, setLoading, setError, selectedRinks }: SelectedRinksListProps) {
 
   return (
     loading ? (

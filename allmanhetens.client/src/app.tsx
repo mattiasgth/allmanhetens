@@ -3,14 +3,17 @@ import { Center } from "@chakra-ui/react"
 import DefaultScreen from './components/default/default-screen';
 import SettingsScreen from './components/settings/settings-screen';
 import { AllmanhetensDate } from './model/allmanhetens-date'
+import { SkatingSessionResponse } from './model/skating-session-response';
+import { SkatingSessionDisplay } from './model/skating-session-display';
+import { RinkSkatingSessions } from './model/rink-skating-sessions';
 
-const formatTime = (time) => {
+const formatTime = (time: string) => {
   return time.split(':').splice(0, 2).join(':');
 }
 
 // Transform API data to display format
-const transformSessionData = (apiSessions) => {
-  const mapped = apiSessions.map(session => ({
+const transformSessionData = (apiSessions: SkatingSessionResponse[]) => {
+  const mapped : SkatingSessionDisplay[] = apiSessions.map(session => ({
     id: session.id,
     rinkId: session.rinkId,
     rinkName: session.rinkName,
@@ -26,8 +29,8 @@ const transformSessionData = (apiSessions) => {
     date: session.date
   }));
 
-  const groupedArray = Object.values(
-    mapped.reduce((groups, session) => {
+  const groupedArray =
+    mapped.reduce((groups: RinkSkatingSessions[], session) => {
       if (!groups[session.rinkId]) {
         groups[session.rinkId] = {
           id: session.rinkId,
@@ -38,20 +41,19 @@ const transformSessionData = (apiSessions) => {
       }
       groups[session.rinkId].sessions.push(session);
       return groups;
-    }, {})
-  );
+    }, []);
   return groupedArray;
 };
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [sessions, setSessions] = useState([]);
+  const [sessions, setSessions] = useState<RinkSkatingSessions[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string|null>(null);
   const [activeScreen, setActiveScreen] = useState('default');
-  const [selectedRinks, setSelectedRinks] = useState([]);
+  const [selectedRinks, setSelectedRinks] = useState<RinkSkatingSessions[]>([]);
   const [currentDate, setCurrentDate] = useState((new AllmanhetensDate(null)).toString());
-  function onCurrentDateUpdate(value) {
+  function onCurrentDateUpdate(value: string) {
     setCurrentDate(value);
     loadSessions(value);
   }
@@ -63,16 +65,17 @@ function App() {
 
   // API Service
   const sessionService = {
-    async fetchSessions(date) {
+    async fetchSessions(date: string) {
       let params = new URLSearchParams();
       if (date) {
         params.append("date", date);
       }
-      return await fetch(`/api/skatingSessions?${params}`).then(res => res.json());
+      return await fetch(`/api/skatingSessions?${params}`)
+        .then(res => res.json() as Promise<SkatingSessionResponse[]>);
     }
   };
 
-  const loadSessions = async (date) => {
+  const loadSessions = async (date: string) => {
     try {
       setLoading(true);
       setError(null);
@@ -92,22 +95,6 @@ function App() {
   React.useEffect(() => {
     loadSessions(currentDate);
   }, []);
-
-  const handleSearch = (value) => {
-    setSearchTerm(value);
-    if (!value) {
-      setSelectedRinks(sessions);
-    } else {
-      const filtered = sessions.filter(session =>
-        session.rinkName.toLowerCase().includes(value.toLowerCase()) ||
-        session.rinkAddress.toLowerCase().includes(value.toLowerCase()) ||
-        session.type.toLowerCase().includes(value.toLowerCase())
-      );
-      setSelectedRinks(filtered);
-    }
-  };
-
-
 
   return (
     <Center>

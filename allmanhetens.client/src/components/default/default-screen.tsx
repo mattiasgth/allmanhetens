@@ -1,4 +1,4 @@
-import { VStack, Heading, IconButton, Card } from "@chakra-ui/react"
+import { Box, VStack, Heading, IconButton, Card } from "@chakra-ui/react"
 import SessionsDateSelector from './sessions-date-selector';
 import SelectedRinksList from './selected-rinks-list';
 import { Settings } from 'lucide-react';
@@ -14,7 +14,7 @@ export interface DefaultScreenProps {
 function DefaultScreen({ setActiveScreen, loading, loadSessions, currentDate, setCurrentDate, selectedRinks }: DefaultScreenProps) {
 
   return (
-    <VStack maxWidth="480px" minWidth="480px">
+    <VStack maxWidth="95vw">
       {/* Header */}
       <Heading size="3xl">
         🏒 Allmänhetens <IconButton onClick={() => setActiveScreen('settings')} variant="outline"><Settings /></IconButton>
@@ -23,21 +23,22 @@ function DefaultScreen({ setActiveScreen, loading, loadSessions, currentDate, se
       <SelectedRinksList selectedRinks={selectedRinks} loading={loading} width={"100%"}></SelectedRinksList>
       {/* Empty State */}
       {selectedRinks && selectedRinks.length === 0 && (
-        <Card.Root>
+        <Card.Root width="100%">
           <Card.Header>
-            <div className="text-4xl">🔍</div><span className="text-gray-600 dark:text-gray-400">
-              No sessions found for this date.
-            </span>
+            <Heading>
+            No sessions today
+            </Heading>
           </Card.Header>
+          <Card.Body>
+            🔍 No sessions found for this date.
+          </Card.Body>
         </Card.Root>
       )}
       {/* Instructions */}
       {selectedRinks && selectedRinks.length > 0 && (
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <p className="text-sm text-blue-700 dark:text-blue-300 text-center">
-            💡 Drag and drop cards to prioritize your preferred skating sessions  {selectedRinks.length}
-          </p>
-        </div>
+        <Box>
+            💡 Drag and drop cards to prioritize your preferred skating sessions
+        </Box>
       )}
     </VStack >
   );

@@ -1,4 +1,4 @@
-import { Box, VStack, Heading, IconButton, Card } from "@chakra-ui/react"
+  import { Box, VStack, Heading, IconButton, Card } from "@chakra-ui/react"
 import SessionsDateSelector from './sessions-date-selector';
 import SelectedRinksList from './selected-rinks-list';
 import { Settings } from 'lucide-react';
@@ -14,7 +14,7 @@ export interface DefaultScreenProps {
 function DefaultScreen({ setActiveScreen, loading, loadSessions, currentDate, setCurrentDate, selectedRinks }: DefaultScreenProps) {
 
   return (
-    <VStack maxWidth="95vw">
+    <VStack className="default-screen-vstack">
       {/* Header */}
       <Heading size="3xl">
         🏒 Allmänhetens <IconButton onClick={() => setActiveScreen('settings')} variant="outline"><Settings /></IconButton>

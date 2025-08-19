@@ -6,8 +6,6 @@ namespace Allmanhetens.DTO
     {
         public int Id { get; set; }
         public int? RinkId { get; set; }
-        public string? RinkName { get; set; }
-        public string? RinkAddress { get; set; }
         public double? DistanceKm { get; set; }
         public TimeSpan? StartTime { get; set; }
         public TimeSpan? EndTime { get; set; }

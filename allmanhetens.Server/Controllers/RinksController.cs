@@ -1,4 +1,4 @@
-﻿using allmanhetens.Server.Controllers;
+using allmanhetens.Server.Controllers;
 using Allmanhetens.DTO;
 using Allmanhetens.Server.Services;
 using AutoMapper;
@@ -19,6 +19,22 @@ namespace Allmanhetens.Server.Controllers
             _logger = logger;
             _service = service;
             _mapper = mapper;
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<RinkResponseDTO>> GetRinkById(int id)
+        {
+            try
+            {
+                var rink = await _service.GetRinkByIdAsync(id);
+                var rslt = _mapper.Map<RinkResponseDTO>(rink);
+                return Ok(rslt);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception caught");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

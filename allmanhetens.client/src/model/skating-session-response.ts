@@ -1,8 +1,6 @@
 export interface SkatingSessionResponse {
   id: number;
   rinkId: number;
-  rinkName: string;
-  rinkAddress: string;
   distance: string;
   startTime: string;
   endTime: string;

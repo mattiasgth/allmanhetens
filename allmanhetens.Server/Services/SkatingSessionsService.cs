@@ -29,5 +29,12 @@ namespace Allmanhetens.Server.Services
             await Task.CompletedTask;
             return SkatingSessionData.Rinks;
         }
+
+        internal async Task<Rink?> GetRinkByIdAsync(int id)
+        {
+            await Task.CompletedTask;
+            var rink = SkatingSessionData.Rinks.Where(x => x.Id == id).FirstOrDefault();
+            return rink;
+        }
     }
 }

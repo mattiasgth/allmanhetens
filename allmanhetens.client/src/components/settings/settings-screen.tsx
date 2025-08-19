@@ -8,7 +8,7 @@ export interface SettingsScreenProps {
 };
 function SettingsScreen({ closeScreen }: SettingsScreenProps) {
   return (
-    <VStack maxWidth="95vw">
+    <VStack className="settings-screen-vstack">
       {/* Header */}
       <Heading size="3xl">
         <IconButton onClick={closeScreen} variant="outline" ><ArrowBigLeft /></IconButton>Inställningar 

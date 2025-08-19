@@ -2,7 +2,7 @@ import { SkatingSessionDisplay } from "./skating-session-display";
 
 export interface RinkSkatingSessions {
   id: number;
-  name: string;
+  name: string|null;
   address: string;
   longitude: number | null;
   latitude: number | null;
